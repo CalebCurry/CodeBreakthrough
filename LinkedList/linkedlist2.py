@@ -57,6 +57,9 @@ class LinkedList:
             node = node.next
         return string
 
+    def contains_data(data):
+        
+
 linked_list = LinkedList(Node(10))
 linked_list.start.next = Node(20)
 linked_list.start.next.next = Node(30)
