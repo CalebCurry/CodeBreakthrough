@@ -6,81 +6,173 @@ class Node:
     def __repr__(self):
         return str(self.data)
 
+
 class LinkedList:
     def __init__(self, start):
-        self.start = start 
+        self.start = start
+
+    def __len__(self):
+        node = self.start
+        length = 0
+        while node is not None:
+            length += 1
+            node = node.next
+        return length
 
     def get(self, index):
         node = self.start
-        for i in range(index): 
+        for i in range(index):
             node = node.next
         return node
 
+    def index(self, data):
+        index = 0
+        for node in self:
+            if node.data == data:
+                return index
+            index += 1
+        return -1
+
+        # Without __iter__:
+        """
+        node = self.start
+        index = 0
+        while node is not None:
+            if node.data == data:
+                return index
+            index += 1
+            node = node.next
+        """
+
     def add_beginning(self, data):
         self.start = Node(data, self.start)
-        return
-
-    def add(self, index, data):
-        #old add
-        if index == 0:
-            self.add_beginning(data)
-            
-        #as an example assume we want to append after index 1 the value 20...
-        #We would move the previous node.next to this new node.next.
-        #previous node.next to point to the new node. 
-        node = self.start #consider index 0. 
-        for i in range(index-1): #-1 to get before that node 
-            node = node.next
-        node.next = Node(data, next_node=node.next)
 
     def add(self, index, data):
         if index == 0:
             self.add_beginning(data)
+            return
 
-        node = self.get(index-1)
+        node = self.get(index - 1)
         node.next = Node(data, node.next)
 
     def append(self, data):
+
+        node = self.get(len(self) - 1)  # get last node
+        node.next = Node(data)
+
+        # Without get:
+        """
         node = self.start
         while True:
             if not node.next:
                 break
             node = node.next
         node.next = Node(data)
-
-    def delete(self, index):
-        #old delete
-        node = self.start
-        for i in range(index-1): #stop one befere the node as you gotta update next
-            node = node.next
-        node.next = node.next.next
+        """
 
     def delete_beginning(self):
-        print("self.start:", self.start, self.start.next)
+        node_to_return = self.start
         self.start = self.start.next
+        return node_to_return
 
     def delete(self, index):
         if index == 0:
-            self.delete_beginning()
-            return
-        print("new delete")
-        node = self.get(index-1) #get before
+            return self.delete_beginning()
+
+        node = self.get(index - 1)  # get before
+        node_to_return = node.next
         node.next = node.next.next
+        return node_to_return
+
+    def delete_end(self):
+        return self.delete(len(self) - 1)
 
     def __repr__(self):
         string = ''
         node = self.start
         while True:
             string += str(node) + " "
-            if not node.next:
+            if node.next is None:
                 break
             node = node.next
         return string
 
+    def __iter__(self):
+        node = self.start
+        while node is not None:
+            yield node
+            node = node.next
+
+########## CREATING A LINKED LIST ##########
+
+
+# creating a linked list with one node
 linked_list = LinkedList(Node(10))
 linked_list.start.next = Node(20)
 linked_list.start.next.next = Node(30)
-linked_list.add(3, 40)
-print(linked_list)
-linked_list.delete(0)
-print(linked_list)
+print(linked_list)  # 10 20 30
+
+# Creating a chain up front with __init__
+# Each node can take a next argument
+linked_list = LinkedList(Node(10, Node(20, Node(30, Node(40)))))
+print(linked_list)  # 10 20 30 40
+
+# You could pass in a a bunch of nodes directly to the LinkedList
+# linked_list = LinkedList(Node(10), Node(20), Node(30), Node(40))
+# This would work if you set up the __init__ method with a *nodes parameter
+# And then linked each node
+# Here's an example of how to create a function to take unlimited arguments:
+# https://youtu.be/s3IvdkCq2_c?t=21473
+
+
+########## Get a node by index ##########
+
+
+print("Index 2:", linked_list.get(2))  # 30
+
+
+########## Get length of linked list ##########
+
+
+print("Length of linked list:", len(linked_list))  # 4
+print("Last element:", linked_list.get(len(linked_list) - 1))  # 40
+print("Length of empty list:", len(LinkedList(None)))
+print("Length of one node:", len(LinkedList(Node(50))))
+
+
+########## Adding to a linked list ##########
+
+linked_list.add_beginning(5)
+linked_list.add(0, 3)
+print(linked_list)  # 3 5 10 20 30 40
+
+linked_list.add(2, 7.5)
+linked_list.add(len(linked_list), 50)  # append
+linked_list.append(60)  # Also append
+print(linked_list)  # 3 5 7.5 10 20 30 40 50 60
+
+
+########## Removing from a linked list ##########
+
+
+removed1 = linked_list.delete(0)  # 3. This removed beginning
+removed2 = linked_list.delete_beginning()  # 5. This removes beginning
+removed3 = linked_list.delete(3)  # 30
+removed4 = linked_list.delete(5)  # 60. This removes end
+popped = linked_list.delete_end()  # 50. This removes end
+
+print("Removed:", removed1, removed2, removed3, removed4, popped)  # 3 5 30 60 50
+print("Here's what's left:", linked_list)  # 7.5 10 20 40
+
+
+########## Iterate through linked list ##########
+
+
+for node in linked_list:
+    print(node)
+
+
+########## Search linked list for data ##########
+
+
+print(linked_list.index(7.5), linked_list.index(10), linked_list.index(40))  # 0

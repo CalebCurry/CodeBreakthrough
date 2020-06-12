@@ -13,7 +13,7 @@ class Position:
         return self.pan == other.pan and self.tilt == other.tilt and self.zoom == other.zoom
 
     __hash__ = None
-            
+
 
 class Camera:
     def __init__(self, serial_number, position, camera_type):
@@ -33,6 +33,7 @@ class Camera:
         ptz = 0
         eptz = 1
         stationary = 2
+
 
 c1 = Camera("abc123", Position(10, 11, 12), Camera.CameraType.eptz)
 c2 = Camera("abc123", Position(10, 11, 12), Camera.CameraType.eptz)

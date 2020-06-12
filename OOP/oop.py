@@ -1,6 +1,7 @@
 from enum import Enum
 from abc import ABC, abstractmethod
 
+
 class SecurityDevice(ABC):
     def __init__(self, active):
         self.active = active
@@ -8,6 +9,7 @@ class SecurityDevice(ABC):
     @abstractmethod
     def reset(self):
         pass
+
 
 class Sensor(SecurityDevice):
     def __init__(self, silent, distance):
@@ -22,16 +24,17 @@ class Sensor(SecurityDevice):
     @distance.setter
     def distance(self, val):
         print("setting distance")
-        self._distance = val  
+        self._distance = val
 
     @distance.deleter
     def distance(self):
-        del self._distance  
+        del self._distance
 
     def reset(self):
         print("Resetting ... Sensor version")
         self.silent = False
         self.distance = 20
+
 
 class Position:
     def __init__(self, pan, tilt, zoom):
@@ -46,9 +49,20 @@ class Position:
         return self.pan == other.pan and self.tilt == other.tilt and self.zoom == other.zoom
 
     __hash__ = None
-            
+
 
 class Camera(SecurityDevice):
+
+    def parse_camera():
+        with open("cameras.txt") as f:
+
+            d = f.read().strip().split(" ")
+            serial_number = d[0]
+            position = Position(int(d[1]), int(d[2]), int(d[3]))
+            camera_type = Camera.CameraType[d[4]]
+
+        return Camera(serial_number, position, camera_type)
+
     def __init__(self, serial_number, position, camera_type):
         self.serial_number = serial_number
         self.position = position
@@ -72,6 +86,9 @@ class Camera(SecurityDevice):
         self.position = Position(0, 0, 0)
 
     @property
+    # we used a property to show that we can hide the internals
+    # serial number will be in format abc-123 or something similar
+    # internally stored as two variables
     def serial_number(self):
         return str.upper(self._serial_number_code) + '-' + self._serial_number_id
 
@@ -86,5 +103,9 @@ class Camera(SecurityDevice):
         del self._serial_number_code
         del self._serial_number_id
 
-camera = Camera('abc-123', Position(1,2, 3), Camera.CameraType.ptz)
+
+camera = Camera('abc-123', Position(1, 2, 3), Camera.CameraType.ptz)
 print(camera.serial_number)
+
+camera = Camera.parse_camera()
+print(camera)

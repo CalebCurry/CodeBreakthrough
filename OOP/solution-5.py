@@ -1,6 +1,7 @@
 from enum import Enum
 from abc import ABC, abstractmethod
 
+
 class SecurityDevice(ABC):
     def __init__(self, active):
         self.active = active
@@ -8,6 +9,7 @@ class SecurityDevice(ABC):
     @abstractmethod
     def reset(self):
         pass
+
 
 class Sensor(SecurityDevice):
     def __init__(self, silent, distance):
@@ -18,6 +20,7 @@ class Sensor(SecurityDevice):
         print("Resetting ... Sensor version")
         self.silent = False
         self.distance = 20
+
 
 class Position:
     def __init__(self, pan, tilt, zoom):
@@ -32,9 +35,10 @@ class Position:
         return self.pan == other.pan and self.tilt == other.tilt and self.zoom == other.zoom
 
     __hash__ = None
-            
+
 
 class Camera(SecurityDevice):
+
     def __init__(self, serial_number, position, camera_type):
         self.serial_number = serial_number
         self.position = position
@@ -58,7 +62,7 @@ class Camera(SecurityDevice):
         self.position = Position(0, 0, 0)
 
 
-camera = Camera('abc', Position(1,2, 3), Camera.CameraType.ptz)
+camera = Camera('abc', Position(1, 2, 3), Camera.CameraType.ptz)
 sensor = Sensor(True, 10)
 
 security_devices = [camera, sensor]
