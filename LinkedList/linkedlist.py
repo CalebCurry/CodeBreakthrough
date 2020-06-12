@@ -175,4 +175,5 @@ for node in linked_list:
 ########## Search linked list for data ##########
 
 
-print(linked_list.index(7.5), linked_list.index(10), linked_list.index(40))  # 0
+print(linked_list.index(7.5), linked_list.index(1),
+      linked_list.index(10), linked_list.index(40))  # 0 -1 1 3
