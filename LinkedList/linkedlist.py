@@ -6,6 +6,9 @@ class Node:
     def __repr__(self):
         return str(self.data)
 
+    def __eq__(self, other):
+        return self.data == other.data
+
 
 class LinkedList:
     def __init__(self, start):
@@ -103,6 +106,13 @@ class LinkedList:
             yield node
             node = node.next
 
+    def __eq__(self, other):
+        print(self, other)
+        for index in range(len(self)):
+            if self.get(index) != other.get(index):
+                return False
+        return True
+
 ########## CREATING A LINKED LIST ##########
 
 
@@ -177,3 +187,22 @@ for node in linked_list:
 
 print(linked_list.index(7.5), linked_list.index(1),
       linked_list.index(10), linked_list.index(40))  # 0 -1 1 3
+
+
+########## compare nodes ##########
+
+
+print(Node(10) == Node(10))  # This should be True
+
+
+########## compare linked list ##########
+
+
+linked_list1 = LinkedList(Node(10, Node(5, Node(3))))
+linked_list2 = LinkedList(Node(10, Node(5, Node(3))))
+
+print(linked_list1 == linked_list2)  # True
+
+linked_list2.get(1).data = 6  # Change one
+
+print(linked_list1 == linked_list2)  # False
